@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Forensics Tool Script
+# Author: Your Name
+# Date: YYYY-MM-DD
+# Description: A simple forensics tool to gather system info and check for modified files.
+
+# Function to gather system information
+gather_system_info() {
+    echo "Gathering system information..."
+    echo "Hostname: $(hostname)"
+    echo "Operating System: $(uname -o)"
+    echo "Kernel Version: $(uname -r)"
+    echo "Uptime: $(uptime -p)"
+    echo "Users currently logged in:"
+    who
+    echo "-----------------------------------"
+}
+
+# Function to check for modified files
+check_modified_files() {
+    echo "Checking for modified files in /etc..."
+    find /etc -type f -mtime -7 -exec ls -l {} \; | sort
+    echo "-----------------------------------"
+}
+
+# Function to analyze log files
+analyze_logs() {
+    echo "Analyzing system logs..."
+    echo "Last 10 entries in /var/log/auth.log:"
+    tail -n 10 /var/log/auth.log
+    echo "-----------------------------------"
+}
+
+# Function to display help
+display_help() {
+    echo "Usage: $0 [option]"
+    echo "Options:"
+    echo "  -s    Gather system information"
+    echo "  -m    Check for modified files"
+    echo "  -l    Analyze log files"
+    echo "  -h    Display this help message"
+}
+
+# Main script logic
+if [ $# -eq 0 ]; then
+    echo "No options provided. Use -h for help."
+    exit 1
+fi
+
+while getopts ":smlh" opt; do
+    case $opt in
+        s)
+            gather_system_info
+            ;;
+        m)
+            check_modified_files
+            ;;
+        l)
+            analyze_logs
+            ;;
+        h)
+            display_help
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            display_help
+            exit 1
+            ;;
+    esac
+done
+
+# End of script
+echo "Forensics tool execution completed."
+
